@@ -4,11 +4,7 @@ import {usePuterStore} from "~/lib/puter";
 import Summary from "~/components/Summary";
 import ATS from "~/components/ATS";
 import Details from "~/components/Details";
-
-export const meta = () => ([
-    { title: 'Resumind | Review ' },
-    { name: 'description', content: 'Detailed overview of your resume' },
-])
+import type { Feedback } from "../../types";
 
 const Resume = () => {
     const { auth, isLoading, fs, kv } = usePuterStore();
@@ -20,7 +16,7 @@ const Resume = () => {
 
     useEffect(() => {
         if(!isLoading && !auth.isAuthenticated) navigate(`/auth?next=/resume/${id}`);
-    }, [isLoading])
+    }, [isLoading, auth.isAuthenticated, navigate, id])
 
     useEffect(() => {
         const loadResume = async () => {
@@ -43,11 +39,10 @@ const Resume = () => {
             setImageUrl(imageUrl);
 
             setFeedback(data.feedback);
-            console.log({resumeUrl, imageUrl, feedback: data.feedback });
         }
 
-        loadResume();
-    }, [id]);
+        void loadResume();
+    }, [id, kv, fs]);
 
     return (
         <main className="!pt-0">
@@ -65,6 +60,7 @@ const Resume = () => {
                                 <img
                                     src={imageUrl}
                                     className="w-full h-full object-contain rounded-2xl"
+                                    alt="resume"
                                     title="resume"
                                 />
                             </a>
@@ -80,7 +76,7 @@ const Resume = () => {
                             <Details feedback={feedback} />
                         </div>
                     ) : (
-                        <img src="/images/resume-scan-2.gif" className="w-full" />
+                        <img src="/images/resume-scan-2.gif" alt="Scanning Resume" className="w-full" />
                     )}
                 </section>
             </div>
