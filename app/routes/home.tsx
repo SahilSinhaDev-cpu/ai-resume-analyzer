@@ -1,16 +1,9 @@
-import type { Route } from "./+types/home";
 import Navbar from "~/components/Navbar";
 import ResumeCard from "~/components/ResumeCard";
 import {usePuterStore} from "~/lib/puter";
 import {Link, useNavigate} from "react-router";
 import {useEffect, useState} from "react";
-
-export function meta({}: Route.MetaArgs) {
-    return [
-        { title: "Resumind" },
-        { name: "description", content: "Smart feedback for your dream job!" },
-    ];
-}
+import type { Resume } from "../../types";
 
 export default function Home() {
     const { auth, kv } = usePuterStore();
@@ -20,7 +13,7 @@ export default function Home() {
 
     useEffect(() => {
         if(!auth.isAuthenticated) navigate('/auth?next=/');
-    }, [auth.isAuthenticated])
+    }, [auth.isAuthenticated, navigate])
 
     useEffect(() => {
         const loadResumes = async () => {
@@ -36,14 +29,8 @@ export default function Home() {
             setLoadingResumes(false);
         }
 
-        loadResumes()
-    }, []);
-
-    useEffect(() => {
-        if (typeof window !== 'undefined') {
-            window.puter.ai.chat();
-        }
-    }, []);
+        void loadResumes()
+    }, [kv]);
 
     return <main className="bg-[url('/images/bg-main.svg')] bg-cover">
         <Navbar />
@@ -59,7 +46,7 @@ export default function Home() {
             </div>
             {loadingResumes && (
                 <div className="flex flex-col items-center justify-center">
-                    <img src="/images/resume-scan-2.gif" className="w-[200px]" />
+                    <img src="/images/resume-scan-2.gif" alt="Scanning Resumes" className="w-[200px]" />
                 </div>
             )}
 

@@ -1,7 +1,8 @@
-import {Link} from "react-router";
+import { Link } from "react-router";
 import ScoreCircle from "~/components/ScoreCircle";
 import {useEffect, useState} from "react";
 import {usePuterStore} from "~/lib/puter";
+import type { Resume } from "../../types";
 
 const ResumeCard = ({ resume: { id, companyName, jobTitle, feedback, imagePath } }: { resume: Resume }) => {
     const { fs } = usePuterStore();
@@ -15,8 +16,8 @@ const ResumeCard = ({ resume: { id, companyName, jobTitle, feedback, imagePath }
             setResumeUrl(url);
         }
 
-        loadResume();
-    }, [imagePath]);
+        void loadResume();
+    }, [imagePath, fs]);
 
     return (
         <Link to={`/resume/${id}`} className="resume-card animate-in fade-in duration-1000">
@@ -40,7 +41,7 @@ const ResumeCard = ({ resume: { id, companyName, jobTitle, feedback, imagePath }
                         />
                     </div>
                 </div>
-            )}
+                )}
         </Link>
     )
 }
